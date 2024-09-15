@@ -97,7 +97,7 @@ class HomeScreen extends StatelessWidget {
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: const Text('O quarto está ocupado?'),
+                        title: const Text('Ocupar o Leito?'),
                         content: Text('Quarto $roomId'),
                         actions: [
                           TextButton(

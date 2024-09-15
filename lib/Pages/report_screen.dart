@@ -46,6 +46,48 @@ class _ReportScreenState extends State<ReportScreen> {
     return DateFormat('dd/MM/yyyy HH:mm').format(dateTime);
   }
 
+  Widget _buildInspectionResult(Map<String, dynamic> results) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: results.entries.map((entry) {
+        String itemTitle = entry.key;
+        Map<String, dynamic> resultDetails = entry.value;
+        String status = resultDetails['status'] ?? 'Não informado';
+        String comment = resultDetails['comment'] ?? 'Sem comentário';
+        String imageUrl = resultDetails['imageUrl'] ?? '';
+
+        return Card(
+          margin: const EdgeInsets.symmetric(vertical: 10),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          elevation: 3,
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  itemTitle,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 5),
+                Text('Status: $status', style: TextStyle(fontSize: 16)),
+                const SizedBox(height: 5),
+                Text('Comentário: $comment', style: TextStyle(fontSize: 16)),
+                if (imageUrl.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Image.network(imageUrl, height: 150),
+                  ),
+              ],
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,7 +134,7 @@ class _ReportScreenState extends State<ReportScreen> {
                     ElevatedButton.icon(
                       onPressed: _fetchReport,
                       icon: const Icon(Icons.search, color: Colors.white),
-                      label: const Text('Buscar Relatório'),
+                      label: const Text('Buscar Relatório',style: TextStyle(color: Colors.white)),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.deepPurple,
                         shape: RoundedRectangleBorder(
@@ -109,7 +151,6 @@ class _ReportScreenState extends State<ReportScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            // Exibição dos relatórios
             _reportDataList.isNotEmpty
                 ? Column(
                     children: _reportDataList.map((reportData) {
@@ -168,6 +209,17 @@ class _ReportScreenState extends State<ReportScreen> {
                                       reportData['startTime'], reportData['endTime']),
                                 ),
                               ),
+                              const Divider(),
+                              const Text(
+                                'Resultados da Inspeção:',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.deepPurple,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              _buildInspectionResult(reportData['inspectionResults']),
                             ],
                           ),
                         ),
